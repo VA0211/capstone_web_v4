@@ -189,7 +189,7 @@ export default Yolo;
 function nonMaximumSuppression(
   boxes: number[][],
   scores: number[],
-  iouThreshold: number = 0.4
+  iouThreshold: number = 0.2
 ): number[][] {
   const keep: boolean[] = new Array(boxes.length).fill(true);
 
