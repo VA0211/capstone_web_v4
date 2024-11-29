@@ -19,6 +19,7 @@ const Yolo = (props: any) => {
   );
   const [modelName, setModelName] = useState<string>(RES_TO_MODEL[0][1]);
   const [session, setSession] = useState<any>(null);
+  const [showConfidence, setShowConfidence] = useState<boolean>(false);
 
   useEffect(() => {
     const getSession = async () => {
@@ -159,28 +160,29 @@ const clsIdToColor = (cls_id: number) => {
   return color_map[cls_id] || 'rgb(255, 255, 255)';
 };
 
-  const postprocess = async (
-    tensor: Tensor,
-    inferenceTime: number,
-    ctx: CanvasRenderingContext2D,
-    modelName: string
-  ) => {
-    return postprocessYolov10(ctx, modelResolution, tensor, clsIdToColor);
-  };
+const postprocess = async (
+  tensor: Tensor,
+  inferenceTime: number,
+  ctx: CanvasRenderingContext2D,
+  modelName: string
+) => {
+  return postprocessYolov10(ctx, modelResolution, tensor, clsIdToColor, showConfidence);
+};
 
-  return (
-    <ObjectDetectionCamera
-      width={props.width}
-      height={props.height}
-      preprocess={preprocess}
-      postprocess={postprocess}
-      // resizeCanvasCtx={resizeCanvasCtx}
-      session={session}
-      changeCurrentModelResolution={changeModelResolution}
-      currentModelResolution={modelResolution}
-      modelName={modelName}
-    />
-  );
+return (
+  <ObjectDetectionCamera
+    width={props.width}
+    height={props.height}
+    preprocess={preprocess}
+    postprocess={postprocess}
+    session={session}
+    changeCurrentModelResolution={changeModelResolution}
+    currentModelResolution={modelResolution}
+    modelName={modelName}
+    showConfidence={showConfidence}
+    setShowConfidence={setShowConfidence}
+  />
+);
 };
 export default Yolo;
 
@@ -231,7 +233,8 @@ function postprocessYolov10(
   ctx: CanvasRenderingContext2D,
   modelResolution: number[],
   tensor: Tensor,
-  clsIdToColor: (conf: number) => string
+  clsIdToColor: (conf: number) => string,
+  showConfidence: boolean
 ) {
   const dx = ctx.canvas.width / modelResolution[0];
   const dy = ctx.canvas.height / modelResolution[1];
@@ -308,12 +311,13 @@ function postprocessYolov10(
     ctx.fillStyle = color;
     ctx.fill();
     ctx.closePath();
-
+    
+    const displayText = showConfidence ? `${label} -.${score}` : label;
     // Draw the label above the dot
     ctx.font = '20px Arial';
     ctx.fillStyle = color;
     ctx.textAlign = 'center'; // Center align the label
-    ctx.fillText(label, centerX, centerY - 10); // Position label slightly above the dot
+    ctx.fillText(displayText, centerX, centerY - 10); // Position label slightly above the dot
 
     // Add to detection log
     detections.push({

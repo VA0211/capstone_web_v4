@@ -17,6 +17,8 @@ const ObjectDetectionCamera = (props: {
   ) => void;
   currentModelResolution: number[];
   changeCurrentModelResolution: (width?: number, height?: number) => void;
+  showConfidence: boolean;
+  setShowConfidence: (show: boolean) => void;
 }) => {
   const [inferenceTime, setInferenceTime] = useState<number>(0);
   const [totalTime, setTotalTime] = useState<number>(0);
@@ -68,10 +70,10 @@ const ObjectDetectionCamera = (props: {
       data
     );
 
-    const detections = await props.postprocess(outputTensor, inferenceTime, ctx, props.modelName);
+    const detections = await props.postprocess(outputTensor, inferenceTime, ctx, props.modelName, props.showConfidence);
     
-    props.postprocess(outputTensor, inferenceTime, ctx, props.modelName);
-    setInferenceTime(inferenceTime);
+    // props.postprocess(outputTensor, inferenceTime, ctx, props.modelName);
+    // setInferenceTime(inferenceTime);
 
   // Generate formatted detection log
   const timestamp = new Date().toLocaleTimeString();
@@ -231,6 +233,15 @@ const ObjectDetectionCamera = (props: {
               `}
             >
               Live Detection
+            </button>
+            <button
+              onClick={() => props.setShowConfidence(!props.showConfidence)}
+              className={`
+                p-2 border-dashed border-2 rounded-xl hover:translate-y-1 
+                ${props.showConfidence ? 'bg-white text-black' : ''}
+              `}
+            >
+              Show Confidence
             </button>
           </div>
           <div className="flex items-stretch items-center justify-center gap-1">
