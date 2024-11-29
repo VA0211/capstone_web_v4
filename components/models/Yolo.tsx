@@ -20,6 +20,7 @@ const Yolo = (props: any) => {
   const [modelName, setModelName] = useState<string>(RES_TO_MODEL[0][1]);
   const [session, setSession] = useState<any>(null);
   const [showConfidence, setShowConfidence] = useState<boolean>(false);
+  const [confidenceThreshold, setConfidenceThreshold] = useState<number>(0.5);
 
   useEffect(() => {
     const getSession = async () => {
@@ -166,7 +167,7 @@ const postprocess = async (
   ctx: CanvasRenderingContext2D,
   modelName: string
 ) => {
-  return postprocessYolov10(ctx, modelResolution, tensor, clsIdToColor, showConfidence);
+  return postprocessYolov10(ctx, modelResolution, tensor, clsIdToColor, showConfidence, confidenceThreshold);
 };
 
 return (
@@ -181,6 +182,8 @@ return (
     modelName={modelName}
     showConfidence={showConfidence}
     setShowConfidence={setShowConfidence}
+    confidenceThreshold={confidenceThreshold}
+    setConfidenceThreshold={setConfidenceThreshold}
   />
 );
 };
@@ -189,7 +192,7 @@ export default Yolo;
 function nonMaximumSuppression(
   boxes: number[][],
   scores: number[],
-  iouThreshold: number = 0.2
+  iouThreshold: number = 0.6
 ): number[][] {
   const keep: boolean[] = new Array(boxes.length).fill(true);
 
@@ -234,7 +237,8 @@ function postprocessYolov10(
   modelResolution: number[],
   tensor: Tensor,
   clsIdToColor: (conf: number) => string,
-  showConfidence: boolean
+  showConfidence: boolean,
+  confidenceThreshold: number
 ) {
   const dx = ctx.canvas.width / modelResolution[0];
   const dy = ctx.canvas.height / modelResolution[1];
@@ -251,7 +255,7 @@ function postprocessYolov10(
   // Collect the bounding boxes and scores
   for (let i = 0; i < tensor.dims[1]; i += 6) {
     [x0, y0, x1, y1, score, cls_id] = tensor.data.slice(i, i + 6);
-    if ((score as any) < 0.5) {
+    if ((score as any) < confidenceThreshold) {
       continue; // Skip low-confidence detections
     }
 
@@ -312,7 +316,7 @@ function postprocessYolov10(
     ctx.fill();
     ctx.closePath();
     
-    const displayText = showConfidence ? `${label} -.${score}` : label;
+    const displayText = showConfidence ? `${label} - ${score}` : label;
     // Draw the label above the dot
     ctx.font = '20px Arial';
     ctx.fillStyle = color;
@@ -327,7 +331,7 @@ function postprocessYolov10(
     });
   }
 
-  const totalDetections = detections.length;
+  // const totalDetections = detections.length;
 
   // Draw detection count in top left corner
   const totalCountText = `Total: ${Object.values(classCounts).reduce(
@@ -340,7 +344,7 @@ function postprocessYolov10(
   ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
   ctx.fillRect(25, 5, textWidth + 20, textHeight + 10);
   ctx.fillStyle = 'white';
-  ctx.fillText(`${totalCountText} -.${totalDetections}`, 100, 30);
+  ctx.fillText(totalCountText, 100, 30);
 
   // Display individual class counts below the total count
   let offsetY = 60; // Start below the total count

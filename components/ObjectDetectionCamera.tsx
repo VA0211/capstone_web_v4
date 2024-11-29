@@ -19,6 +19,8 @@ const ObjectDetectionCamera = (props: {
   changeCurrentModelResolution: (width?: number, height?: number) => void;
   showConfidence: boolean;
   setShowConfidence: (show: boolean) => void;
+  confidenceThreshold: number;
+  setConfidenceThreshold: (threshold: number) => void;
 }) => {
   const [inferenceTime, setInferenceTime] = useState<number>(0);
   const [totalTime, setTotalTime] = useState<number>(0);
@@ -348,6 +350,19 @@ const ObjectDetectionCamera = (props: {
                 <li key={index}>{log}</li>
               ))}
             </ul>
+          </div>
+          <div className="flex flex-col items-center justify-center w-full mt-4">
+            <div className="flex items-center justify-between w-full max-w-md px-4">
+              <span className="text-sm font-medium text-white">Confidence Threshold: {(props.confidenceThreshold * 100).toFixed(0)}%</span>
+              <input
+                type="range"
+                min="0"
+                max="100"
+                value={props.confidenceThreshold * 100}
+                onChange={(e) => props.setConfidenceThreshold(Number(e.target.value) / 100)}
+                className="w-64 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+              />
+            </div>
           </div>
         </div>
       </div>
