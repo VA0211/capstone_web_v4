@@ -268,13 +268,6 @@ function postprocessYolov10(
       yoloClasses[cls_id].toString()[0] +
       yoloClasses[cls_id].toString().substring(1);
 
-    // Update the class count
-    if (classCounts[label]) {
-      classCounts[label] += 1;
-    } else {
-      classCounts[label] = 1;
-    }
-
     // Store the box, score, and classId for NMS
     boxes.push([x0, y0, x1, y1]);
     scores.push(score);
@@ -295,6 +288,13 @@ function postprocessYolov10(
       yoloClasses[cls_id].toString().substring(1);
 
     const color = clsIdToColor(cls_id);
+    
+    // Update the class count
+    if (classCounts[label]) {
+      classCounts[label] += 1;
+    } else {
+      classCounts[label] = 1;
+    }
 
     // Draw the bounding box
     // ctx.strokeStyle = color;
