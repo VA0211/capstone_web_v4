@@ -288,7 +288,7 @@ function postprocessYolov10(
       yoloClasses[cls_id].toString().substring(1);
 
     const color = clsIdToColor(cls_id);
-    
+
     // Update the class count
     if (classCounts[label]) {
       classCounts[label] += 1;
@@ -327,6 +327,8 @@ function postprocessYolov10(
     });
   }
 
+  const totalDetections = detections.length;
+
   // Draw detection count in top left corner
   const totalCountText = `Total: ${Object.values(classCounts).reduce(
     (a, b) => a + b,
@@ -338,7 +340,7 @@ function postprocessYolov10(
   ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
   ctx.fillRect(25, 5, textWidth + 20, textHeight + 10);
   ctx.fillStyle = 'white';
-  ctx.fillText(totalCountText, 100, 30);
+  ctx.fillText(`${totalCountText} -.${totalDetections}`, 100, 30);
 
   // Display individual class counts below the total count
   let offsetY = 60; // Start below the total count
