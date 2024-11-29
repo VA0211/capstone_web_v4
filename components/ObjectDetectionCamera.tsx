@@ -353,15 +353,32 @@ const ObjectDetectionCamera = (props: {
           </div>
           <div className="flex flex-col items-center justify-center w-full mt-4">
             <div className="flex items-center justify-between w-full max-w-md px-4">
-              <span className="text-sm font-medium text-white">Confidence Threshold: {(props.confidenceThreshold * 100).toFixed(0)}%</span>
-              <input
-                type="range"
-                min="0"
-                max="100"
-                value={props.confidenceThreshold * 100}
-                onChange={(e) => props.setConfidenceThreshold(Number(e.target.value) / 100)}
-                className="w-64 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
-              />
+              <span className="text-sm font-medium text-white">Confidence Threshold:</span>
+              <div className="flex items-center space-x-2">
+                {/* Input box for manual value */}
+                <input
+                  type="number"
+                  min="0"
+                  max="100"
+                  value={(props.confidenceThreshold * 100).toFixed(0)}
+                  onChange={(e) => {
+                    let value = Number(e.target.value);
+                    if (value < 0) value = 0; // Ensure minimum is 0
+                    if (value > 100) value = 100; // Ensure maximum is 100
+                    props.setConfidenceThreshold(value / 100); // Update threshold
+                  }}
+                  className="w-16 p-1 text-center text-black bg-gray-200 rounded-md"
+                />
+                {/* Range slider */}
+                <input
+                  type="range"
+                  min="0"
+                  max="100"
+                  value={(props.confidenceThreshold * 100).toFixed(0)}
+                  onChange={(e) => props.setConfidenceThreshold(Number(e.target.value) / 100)}
+                  className="w-64 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                />
+              </div>
             </div>
           </div>
         </div>
