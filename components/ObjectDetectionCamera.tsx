@@ -70,7 +70,7 @@ const ObjectDetectionCamera = (props: {
       data
     );
 
-    const detections = await props.postprocess(outputTensor, inferenceTime, ctx, props.modelName, props.showConfidence);
+    const detections = await props.postprocess(outputTensor, inferenceTime, ctx, props.modelName);
     
     // props.postprocess(outputTensor, inferenceTime, ctx, props.modelName);
     // setInferenceTime(inferenceTime);
