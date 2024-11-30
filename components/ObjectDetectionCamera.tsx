@@ -254,7 +254,7 @@ const ObjectDetectionCamera = (props: {
                 ${props.applyNMS ? 'bg-white text-black' : ''}
               `}
             >
-              Apply NMS
+              NMS
             </button>
           </div>
           <div className="flex items-stretch items-center justify-center gap-1">
@@ -353,8 +353,8 @@ const ObjectDetectionCamera = (props: {
               </div>
             </div>
           </div> */}
-          <div className="p-4 overflow-y-scroll overflow-x-hidden bg-gray-100 border rounded-lg h-48" 
-               style={{ width: '650px', maxWidth: '100%', whiteSpace: 'pre-wrap', wordWrap: 'break-word' }}>
+          <div className="p-4 overflow-y-scroll overflow-x-hidden bg-gray-100 border rounded-lg h-60" 
+               style={{ width: '680px', maxWidth: '100%', whiteSpace: 'pre-wrap', wordWrap: 'break-word' }}>
             <h2 className="text-lg font-semibold text-black">Prediction Logs</h2>
             <ul className='text-black whitespace-pre-line break-words'>
               {predictionLogs.map((log, index) => (
