@@ -21,6 +21,8 @@ const ObjectDetectionCamera = (props: {
   setShowConfidence: (show: boolean) => void;
   confidenceThreshold: number;
   setConfidenceThreshold: (threshold: number) => void;
+  applyNMS: boolean;
+  setApplyNMS: (apply: boolean) => void;
 }) => {
   const [inferenceTime, setInferenceTime] = useState<number>(0);
   const [totalTime, setTotalTime] = useState<number>(0);
@@ -244,6 +246,15 @@ const ObjectDetectionCamera = (props: {
               `}
             >
               Show Confidence
+            </button>
+            <button
+              onClick={() => props.setApplyNMS(!props.applyNMS)}
+              className={`
+                p-2 border-dashed border-2 rounded-xl hover:translate-y-1 
+                ${props.applyNMS ? 'bg-white text-black' : ''}
+              `}
+            >
+              Apply NMS
             </button>
           </div>
           <div className="flex items-stretch items-center justify-center gap-1">

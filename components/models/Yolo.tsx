@@ -21,6 +21,7 @@ const Yolo = (props: any) => {
   const [session, setSession] = useState<any>(null);
   const [showConfidence, setShowConfidence] = useState<boolean>(false);
   const [confidenceThreshold, setConfidenceThreshold] = useState<number>(0.5);
+  const [applyNMS, setApplyNMS] = useState<boolean>(true);
 
   useEffect(() => {
     const getSession = async () => {
@@ -167,7 +168,7 @@ const postprocess = async (
   ctx: CanvasRenderingContext2D,
   modelName: string
 ) => {
-  return postprocessYolov10(ctx, modelResolution, tensor, clsIdToColor, showConfidence, confidenceThreshold);
+  return postprocessYolov10(ctx, modelResolution, tensor, clsIdToColor, showConfidence, confidenceThreshold, applyNMS);
 };
 
 return (
@@ -184,6 +185,8 @@ return (
     setShowConfidence={setShowConfidence}
     confidenceThreshold={confidenceThreshold}
     setConfidenceThreshold={setConfidenceThreshold}
+    applyNMS={applyNMS}
+    setApplyNMS={setApplyNMS}
   />
 );
 };
@@ -238,7 +241,8 @@ function postprocessYolov10(
   tensor: Tensor,
   clsIdToColor: (conf: number) => string,
   showConfidence: boolean,
-  confidenceThreshold: number
+  confidenceThreshold: number,
+  applyNMS: boolean
 ) {
   const dx = ctx.canvas.width / modelResolution[0];
   const dy = ctx.canvas.height / modelResolution[1];
@@ -279,7 +283,7 @@ function postprocessYolov10(
   }
 
   // Apply Non-Maximum Suppression (NMS)
-  const filteredBoxes = nonMaximumSuppression(boxes, scores);
+  const filteredBoxes = applyNMS ? nonMaximumSuppression(boxes, scores) : boxes;
 
   // Draw the filtered boxes
   for (const box of filteredBoxes) {
