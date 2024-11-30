@@ -10,7 +10,8 @@ import { useEffect } from 'react';
 import { runModelUtils } from '../../utils';
 
 const RES_TO_MODEL: [number[], string][] = [
-  [[800, 800], 'ghost10_final.onnx']
+  // [[800, 800], 'ghost10_final.onnx'],
+  [[800, 800], 'draft_ghost.onnx']
 ];
 
 const Yolo = (props: any) => {

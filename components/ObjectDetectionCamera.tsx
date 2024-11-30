@@ -84,7 +84,7 @@ const ObjectDetectionCamera = (props: {
   const formattedDetections = JSON.stringify(detections)
 
   const formattedLog = `===================
-                        Timestamp: ${timestamp}
+                        Timestamp: ${timestamp} - Inference Time: ${inferenceTime}
                         Model Output:\n${formattedDetections}
                         ===================\n`;
 
